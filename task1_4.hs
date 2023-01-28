@@ -1,5 +1,6 @@
+-- quadratic equation roots
 root a b c
-    | d < 0 = error "0"
+    | d < 0 = error "discriminant less than zero" -- or d < 0 = []
     | a == 0 = [- c / b]
     | d == 0 = [- b / (2 * a)]
     | otherwise = [x , y] where

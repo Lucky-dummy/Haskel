@@ -1,3 +1,4 @@
+-- euler totient function
 euler 1 = 1
 euler n = euler' n 2 where
   euler' n k = if k < n
