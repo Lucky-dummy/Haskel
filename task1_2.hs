@@ -1,4 +1,7 @@
--- least common multiple
+{-
+Реализовать функцию, вычисляющую наименьшее общее кратное чисел m и n.
+-}
+
 foo a b = if a < b
   then div b (gcd b a) * a
   else div a (gcd a b) * b where
