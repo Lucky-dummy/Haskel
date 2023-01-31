@@ -13,7 +13,7 @@
 
 data Tree a = EmptyTree | Node a (Tree a) (Tree a)
 
-foo str = printTree (buildTree (words str)) where
+foo str = calculate (opz (buildTree (words str))) where
 --foo str = postfix (words str) [] [] where
   buildTree [] = EmptyTree
   buildTree str = buildTree' (postfix str [] []) []
@@ -21,10 +21,10 @@ foo str = printTree (buildTree (words str)) where
   buildTree' [] [] = EmptyTree
   buildTree' [] [x] = x
   buildTree' [x] stack = if isOper x
-    then Node x (head stack) (head (tail stack))
+    then Node x (head (tail stack)) (head stack)
     else Node x EmptyTree EmptyTree
   buildTree' (x : xs) stack = if isOper x
-    then buildTree' xs (Node x (head stack) (head (tail stack)) : tail (tail stack))
+    then buildTree' xs (Node x (head (tail stack)) (head stack) : tail (tail stack))
     else buildTree' xs (Node x EmptyTree EmptyTree : stack)
 
   isOper "+" = True
@@ -52,7 +52,22 @@ foo str = printTree (buildTree (words str)) where
   isLPrior a b = True
   
   printTree EmptyTree = ""
-  printTree (Node a l r) = "(" ++ printTree l ++ a ++ printTree r ++ ")"
+  printTree (Node a EmptyTree EmptyTree) = a
+  printTree (Node a l r)
+    | isOper a = "(" ++ printTree l ++ ")" ++ a ++ "(" ++ printTree r ++ ")"
+    | otherwise = a
+
+  opz EmptyTree = ""
+  opz (Node a l r)
+    | isOper a = opz l ++ " " ++ opz r ++ " " ++ a
+    | otherwise = a
+
+  calculate = head . foldl foldingFunction [] . words where
+    foldingFunction (x:y:ys) "+" = (x + y):ys
+    foldingFunction (x:y:ys) "-" = (y - x):ys
+    foldingFunction (x:y:ys) "*" = (x * y):ys
+    foldingFunction (x:y:ys) "/" = div y x :ys
+    foldingFunction xs num = read num :xs
 
 {-
 
